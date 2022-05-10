@@ -3,7 +3,7 @@ import './App.css';
 import React, { useState, useEffect } from "react";
 
 import QRCode from "qrcode.react";
-import * as KlipAPI from "./klip_test";
+import * as KlipAPI from "./klip_test.js";
 import {
   Alert,
   Container,
