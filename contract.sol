@@ -1397,8 +1397,7 @@ contract KIP17Kbirdz is KIP17, KIP17Enumerable, KIP17Metadata, MinterRole {
 
     function mintingInformation() external view returns (uint256[7] memory){
       uint256[7] memory info =
-        [_antibotInterval, _mintIndexForSale, _mintLimitPerBlock, _mintLimitPerSale, 
-          _mintStartBlockNumber, _maxSaleAmount, _mintPrice];
+        [_antibotInterval, _mintIndexForSale, _maxSaleAmount, _mintPrice];
       return info;
     }
 
