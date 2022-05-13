@@ -1322,12 +1322,7 @@ contract KIP17Kbirdz is KIP17, KIP17Enumerable, KIP17Metadata, MinterRole {
     // If someone burns NFT in the middle of minting,
     // the tokenId will go wrong, so use the index instead of totalSupply().
     uint256 private _mintIndexForSale;
-
-    uint256 private _mintLimitPerBlock;           // Maximum purchase nft per person per block
-    uint256 private _mintLimitPerSale;            // Maximum purchase nft per person per sale
-
     string  private _tokenBaseURI;
-    uint256 private _mintStartBlockNumber;        // In blockchain, blocknumber is the standard of time.
     uint256 private _maxSaleAmount;               // Maximum purchase volume of normal sale.
     uint256 private _mintPrice;                   // 1 KLAY = 1000000000000000000
 
@@ -1445,7 +1440,6 @@ contract KIP17Kbirdz is KIP17, KIP17Enumerable, KIP17Metadata, MinterRole {
       require(whitelistMintEnabled, "The whitelist sale is not enabled!");
       require(msg.value == _mintPrice.mul(requestedCount), "Not enough Klay");
       require(!whitelistClaimed[msg.sender], 'Address already claimed!');
-      require(requestedCount > 0 && requestedCount <= _mintLimitPerBlock, "Too many requests or zero request");
       bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
       require(MerkleProof.verify(_merkleProof, merkleRoot, leaf), 'Invalid proof!');
 
