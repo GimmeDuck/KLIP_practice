@@ -16,6 +16,7 @@ const DEFAULT_ADDRESS = "0x00000000000000000000000000000";
 function App() {
 
   const [qrvalue, setQrvalue] = useState(DEFAULT_QR_CODE);
+  const [qrvalue_send, setQrvalue_send] = useState(DEFAULT_QR_CODE);
   const [myAddress, setMyAddress] = useState("0x00000000000000000000000000000");
   const [myBalance, setMyBalance] = useState("0");
 
@@ -26,7 +27,7 @@ function App() {
   };
 
   const sendKLAYtoGMD = () => {
-    KlipAPI.sendKlay(setMyAddress);
+    KlipAPI.send_klay(setQrvalue_send, setMyAddress);
   };
 
   return (
@@ -62,6 +63,21 @@ function App() {
         ) : null}
 
         <button onClick={sendKLAYtoGMD}> "klay 전송"</button>
+        {qrvalue_send !== "DEFAULT" ? (
+          <Container
+            style={{
+              backgroundColor: "white",
+              width: 300,
+              height: 300,
+              padding: 20,
+            }}
+          >
+            <QRCode value={qrvalue_send} size={256} style={{ margin: "auto" }} />
+
+            <br />
+            <br />
+          </Container>
+        ) : null}
         
       </header>
     </div>
