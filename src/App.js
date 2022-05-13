@@ -25,6 +25,10 @@ function App() {
     });
   };
 
+  const sendKLAYtoGMD = () => {
+    KlipAPI.sendKlay(setMyAddress);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -56,6 +60,8 @@ function App() {
             <br />
           </Container>
         ) : null}
+
+        <button onClick={sendKLAYtoGMD}> "klay 전송"</button>
         
       </header>
     </div>
