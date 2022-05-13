@@ -1407,16 +1407,10 @@ contract KIP17Kbirdz is KIP17, KIP17Enumerable, KIP17Metadata, MinterRole {
     }
 
     function setupSale(uint256 newAntibotInterval, 
-                       uint256 newMintLimitPerBlock,
-                       uint256 newMintLimitPerSale,
-                       uint256 newMintStartBlockNumber,
                        uint256 newMintIndexForSale,
                        uint256 newMaxSaleAmount,
                        uint256 newMintPrice) external onlyMinter{
       _antibotInterval = newAntibotInterval;
-      _mintLimitPerBlock = newMintLimitPerBlock;
-      _mintLimitPerSale = newMintLimitPerSale;
-      _mintStartBlockNumber = newMintStartBlockNumber;
       _mintIndexForSale = newMintIndexForSale;
       _maxSaleAmount = newMaxSaleAmount;
       _mintPrice = newMintPrice;
