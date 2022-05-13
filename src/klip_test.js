@@ -1,9 +1,9 @@
 import axios from "axios";
-import { prepare, request, getResult, getCardList } from 'klip-sdk';
+import MINTABI from "./abi/mintABI.json";
 const A2P_API_PREPARE_URL = "https://a2a-api.klipwallet.com/v2/a2a/prepare";
 const APP_NAME = "KLAYTN_REACT-TEST";
 const to = '0x38596eD0dceaC58632bCf8BD92B5af3854d6A768';
-const amount = '1';
+const amount = '0.1';
 
 
 const getKlipAccessUrl = (method, request_key) => {
@@ -50,7 +50,6 @@ export const getAddress = (setQrvalue, callback) => {
           name: APP_NAME,
         },
         transaction: {
-          name: APP_NAME,
           from : setMyAddress, // optional
           to : to,
           amount : amount,
@@ -77,6 +76,42 @@ export const getAddress = (setQrvalue, callback) => {
       .catch((err)=>{
         console.log(err);
       });
+};
+
+//컨트랙트 실행
+
+export const execute_contract = (setMyAddress) => {
+  axios
+    .post(A2P_API_PREPARE_URL,{
+      bapp: {
+        name: APP_NAME,
+      },
+      type: "execute_contract",
+      transaction : {
+        from: setMyAddress, // optional
+        to: "0x226d6A83e725651B48020f6A645D88c7B37005de", // contract address
+        value: "0", // 단위는 peb. 1 KLAY
+        abi: {
+          "constant": false,
+          "inputs": [
+          {
+          "internalType": "uint256",
+          "name": "requestedCount",
+          "type": "uint256"
+          }
+          ],
+          "name": "publicMint",
+          "outputs": [],
+          "payable": true,
+          "stateMutability": "payable",
+          "type": "function"
+          },
+        params: "1"
+      },
+    })
+    .then((response) => {
+      
+    });
 };
   
   
