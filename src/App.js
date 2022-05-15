@@ -15,13 +15,14 @@ const DEFAULT_ADDRESS = "0x00000000000000000000000000000";
 
 function App() {
 
-  const [qrvalue, setQrvalue] = useState(DEFAULT_QR_CODE);
+  const [qrvalue_auth, setQrvalue_auth] = useState(DEFAULT_QR_CODE);
   const [qrvalue_send, setQrvalue_send] = useState(DEFAULT_QR_CODE);
+  const [qrvalue_execute, setQrvalue_execute] = useState(DEFAULT_QR_CODE);
   const [myAddress, setMyAddress] = useState("0x00000000000000000000000000000");
   const [myBalance, setMyBalance] = useState("0");
 
   const getUserData = () => {
-    KlipAPI.getAddress(setQrvalue, async (address) => {
+    KlipAPI.getAddress(setQrvalue_auth, async (address) => {
       setMyAddress(address);
     });
   };
@@ -30,6 +31,9 @@ function App() {
     KlipAPI.send_klay(setQrvalue_send, setMyAddress);
   };
 
+  const executeContract = () => {
+    KlipAPI.execute_contract(setQrvalue_execute, setMyAddress);
+  };
   return (
     <div className="App">
       <header className="App-header">
@@ -46,7 +50,7 @@ function App() {
           Learn React
         </a>
         <button onClick={getUserData}> "지갑 연동하기"</button>
-        {qrvalue !== "DEFAULT" ? (
+        {qrvalue_auth !== "DEFAULT" ? (
           <Container
             style={{
               backgroundColor: "white",
@@ -55,7 +59,7 @@ function App() {
               padding: 20,
             }}
           >
-            <QRCode value={qrvalue} size={256} style={{ margin: "auto" }} />
+            <QRCode value={qrvalue_auth} size={256} style={{ margin: "auto" }} />
 
             <br />
             <br />
@@ -73,6 +77,23 @@ function App() {
             }}
           >
             <QRCode value={qrvalue_send} size={256} style={{ margin: "auto" }} />
+
+            <br />
+            <br />
+          </Container>
+        ) : null}
+
+        <button onClick={executeContract}> "컨트랙트 실행"</button>
+        {qrvalue_execute !== "DEFAULT" ? (
+          <Container
+            style={{
+              backgroundColor: "white",
+              width: 300,
+              height: 300,
+              padding: 20,
+            }}
+          >
+            <QRCode value={qrvalue_execute} size={256} style={{ margin: "auto" }} />
 
             <br />
             <br />

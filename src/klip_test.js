@@ -33,6 +33,8 @@ export const getAddress = (setQrvalue, callback) => {
             .then((res) => {
               if (res.data.result) {
                 console.log(`[Result] ${JSON.stringify(res.data.result)}`);
+                console.log(res.data.result);
+                console.log(res.data);
                 callback(res.data.result.klaytn_address);
                 clearInterval(timerId);
                 setQrvalue("DEFAULT");
@@ -66,7 +68,8 @@ export const getAddress = (setQrvalue, callback) => {
             )
             .then((res) => {
               if (res.data.result) {
-               
+                console.log(res.data);
+                console.log(res.data.result);
                 clearInterval(timerId);
                 setQrvalue("DEFAULT");
               };
@@ -80,7 +83,7 @@ export const getAddress = (setQrvalue, callback) => {
 
 //컨트랙트 실행
 
-export const execute_contract = (setMyAddress) => {
+export const execute_contract = (setQrvalue, setMyAddress) => {
   axios
     .post(A2P_API_PREPARE_URL,{
       bapp: {
@@ -90,7 +93,7 @@ export const execute_contract = (setMyAddress) => {
       transaction : {
         from: setMyAddress, // optional
         to: "0x226d6A83e725651B48020f6A645D88c7B37005de", // contract address
-        value: "0", // 단위는 peb. 1 KLAY
+        value: "100000000000000000", // 단위는 peb. 1 KLAY
         abi: {
           "constant": false,
           "inputs": [
@@ -110,7 +113,25 @@ export const execute_contract = (setMyAddress) => {
       },
     })
     .then((response) => {
-      
+      const { request_key } = response.data;
+      setQrvalue(getKlipAccessUrl("QR", request_key));
+      let timerId = setInterval(() => {
+        axios
+          .get(
+            `https://a2a-api.klipwallet.com/v2/a2a/result?request_key=${request_key}`
+          )
+          .then((res) => {
+            if (res.data.result) {
+              console.log(res.data);
+              console.log(res.data.result);
+              clearInterval(timerId);
+              setQrvalue("DEFAULT");
+            };
+          });
+      },1000);  
+    })
+    .catch((err)=>{
+      console.log(err);
     });
 };
   
