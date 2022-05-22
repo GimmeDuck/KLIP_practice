@@ -9,6 +9,7 @@ import {
   Container,
 } from "react-bootstrap";
 
+import execute_func from "./execute.js";
 
 const DEFAULT_QR_CODE = "DEFAULT";
 const DEFAULT_ADDRESS = "0x00000000000000000000000000000";
@@ -31,9 +32,15 @@ function App() {
     KlipAPI.send_klay(setQrvalue_send, setMyAddress);
   };
 
+  /*
   const executeContract = () => {
     KlipAPI.execute_contract(setQrvalue_execute, setMyAddress);
   };
+  */
+  const executeContract = () => {
+    execute_func();
+  }
+
   return (
     <div className="App">
       <header className="App-header">
