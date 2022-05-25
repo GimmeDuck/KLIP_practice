@@ -1310,10 +1310,9 @@ library MerkleProof {
     }
 }
 
-// File: contracts\KIP17Kbirdz.sol
 
 pragma solidity ^0.5.0;
-contract KIP17Kbirdz is KIP17, KIP17Enumerable, KIP17Metadata, MinterRole {
+contract KIP17GimmeDuck is KIP17, KIP17Enumerable, KIP17Metadata, MinterRole {
 
     // To prevent bot attack, we record the last contract call block number.
     mapping (address => uint256) private _lastCallBlockNumber;
@@ -1327,28 +1326,14 @@ contract KIP17Kbirdz is KIP17, KIP17Enumerable, KIP17Metadata, MinterRole {
     uint256 private _mintPrice;                   // 1 KLAY = 1000000000000000000
 
     string baseURI;
-    string notRevealedUri;
-    bool public revealed = false;
     bool public publicMintEnabled = false;
 
     function _baseURI() internal view returns (string memory) {
       return baseURI;
     }
 
-    function _notRevealedURI() internal view returns (string memory) {
-      return notRevealedUri;
-    }
-
     function setBaseURI(string memory _newBaseURI) public onlyMinter {
       baseURI = _newBaseURI;
-    }
-
-    function setNotRevealedURI(string memory _newNotRevealedURI) public onlyMinter {
-      notRevealedUri = _newNotRevealedURI;
-    }
-
-    function reveal(bool _state) public onlyMinter {
-      revealed = _state;
     }
 
     function tokenURI(uint256 tokenId)
@@ -1360,16 +1345,9 @@ contract KIP17Kbirdz is KIP17, KIP17Enumerable, KIP17Metadata, MinterRole {
         _exists(tokenId),
         "KIP17Metadata: URI query for nonexistent token"
       );
-      
-    //   if(revealed == false) {
-    //     string memory currentNotRevealedUri = _notRevealedURI();
-    //     return bytes(currentNotRevealedUri).length > 0
-    //         ? string(abi.encodePacked(currentNotRevealedUri, String.uint2str(tokenId), ".json"))
-    //         : "";
-    //   }
       string memory currentBaseURI = _baseURI();
       return bytes(currentBaseURI).length > 0
-          ? string(abi.encodePacked(currentBaseURI, String.uint2str(tokenId), ".json"))
+          ? string(abi.encodePacked(currentBaseURI, ".json"))
           : "";
     }
 
@@ -1379,9 +1357,6 @@ contract KIP17Kbirdz is KIP17, KIP17Enumerable, KIP17Metadata, MinterRole {
     }
 
     function withdraw() external onlyMinter{
-      // This code transfers 5% of the withdraw to JoCoding as a donation.
-      // =============================================================================
-      0x3e944Ca8B08a0a0D3245B05ABF01586B9142f52C.transfer(address(this).balance * 5 / 100);
       // =============================================================================
       // This will transfer the remaining contract balance to the owner.
       // Do not remove this otherwise you will not be able to withdraw the funds.
@@ -1423,45 +1398,14 @@ contract KIP17Kbirdz is KIP17, KIP17Enumerable, KIP17Metadata, MinterRole {
       _lastCallBlockNumber[msg.sender] = block.number;  //함수 실행할 시점의 블록넘버를 함수 실행자와 키-값으로 저장
     }
 
-    //Whitelist Mint
-    bytes32 public merkleRoot;
-    mapping(address => bool) public whitelistClaimed;
-    bool public whitelistMintEnabled = false;
 
-    function setMerkleRoot(bytes32 _merkleRoot) public onlyMinter {
-      merkleRoot = _merkleRoot;
-    }
-
-    function setWhitelistMintEnabled(bool _state) public onlyMinter {
-      whitelistMintEnabled = _state;
-    }
-
-    function whitelistMint(uint256 requestedCount, bytes32[] calldata _merkleProof) external payable {
-      require(whitelistMintEnabled, "The whitelist sale is not enabled!");
-      require(msg.value == _mintPrice.mul(requestedCount), "Not enough Klay");
-      require(!whitelistClaimed[msg.sender], 'Address already claimed!');
-      bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
-      require(MerkleProof.verify(_merkleProof, merkleRoot, leaf), 'Invalid proof!');
-
-      for(uint256 i = 0; i < requestedCount; i++) {
-        _mint(msg.sender, _mintIndexForSale);
-        _mintIndexForSale = _mintIndexForSale.add(1);
-      }
-
-      whitelistClaimed[msg.sender] = true;
-    }
-
-    //Airdrop Mint
-    function airDropMint(address user, uint256 requestedCount) external onlyMinter {
-      require(requestedCount > 0, "zero request");
-      for(uint256 i = 0; i < requestedCount; i++) {
+    //NFT를 사용자에게 drop - 1회씩
+    function Mint(address user) external onlyMinter {
         _mint(user, _mintIndexForSale);
         _mintIndexForSale = _mintIndexForSale.add(1);
-      }
     }
 }
 
-// File: contracts\KIP17Full.sol
 
 pragma solidity ^0.5.0;
 
@@ -1475,7 +1419,7 @@ pragma solidity ^0.5.0;
  * Moreover, it includes approve all functionality using operator terminology
  * @dev see http://kips.klaytn.com/KIPs/kip-17-non_fungible_token
  */
-contract KIP17Full is KIP17, KIP17Enumerable, KIP17Metadata, Ownable, KIP17Kbirdz {
+contract KIP17Full is KIP17, KIP17Enumerable, KIP17Metadata, Ownable, KIP17GimmeDuck {
     constructor (string memory name, string memory symbol) public KIP17Metadata(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
     }
@@ -1763,7 +1707,6 @@ contract KIP17Pausable is KIP13, KIP17, Pausable {
     }
 }
 
-// File: contracts\KIP17KbirdzToken.sol
 
 pragma solidity ^0.5.0;
 
@@ -1771,7 +1714,7 @@ pragma solidity ^0.5.0;
 
 
 
-contract KIP17KbirdzToken is KIP17Full, KIP17Mintable, KIP17MetadataMintable, KIP17Burnable, KIP17Pausable {
+contract KIP17GimmeDuckToken is KIP17Full, KIP17Mintable, KIP17MetadataMintable, KIP17Burnable, KIP17Pausable {
     constructor (string memory name, string memory symbol) public KIP17Full(name, symbol) {
     }
 }
